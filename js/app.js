@@ -9,13 +9,19 @@ let openCards = [];
 
 // set the variable which handle the array with cards which have class 'matched'
 let matchedCards = [];
+
+const movesBox = document.getElementById('moves');
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-
+//  set the value for clicks counter and timer
+let clicks = 0;
+let m = 0;
+let s = 0;
+let timeGoes = true;
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -64,7 +70,7 @@ function startGame (e){
   // TODO: if check is correct change class of element for 'open'
   usedCard.className += ' open';
   // TODO: call to functions: clicksCounter, cardMatch and score
- // clicksCounter();
+  movesCounter();
   cardMatch();
  // score();
 }
@@ -118,6 +124,20 @@ function cardMatch() {
 	
 }
 }
+function movesCounter(){
+
+	// counting clicks on cards
+	clicks = clicks + 1;
+	movesBox.innerHTML = 'Moves: ' + clicks;
+
+	// Remove event listener 'click' for function timerStart
+	if(clicks == 1){
+		for(let i = 0; i < clickedCard.length; i++){
+			clickedCard[i].removeEventListener('click', timerStart);
+		}
+	}
+}
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
