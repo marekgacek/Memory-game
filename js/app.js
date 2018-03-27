@@ -4,7 +4,11 @@
 const deckList = document.querySelector('.deck');
 let cards = ['fa fa-diamond','fa fa-diamond','fa fa-paper-plane-o','fa fa-paper-plane-o','fa fa-anchor','fa fa-anchor','fa fa-bolt','fa fa-bolt','fa fa-cube','fa fa-cube','fa fa-leaf','fa fa-leaf','fa fa-bicycle','fa fa-bicycle','fa fa-bomb','fa fa-bomb'];
 const li = document.getElementsByTagName('li');
+// set the variable which handle the array with cards which have class 'open'
+let openCards = [];
 
+// set the variable which handle the array with cards which have class 'matched'
+let matchedCards = [];
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -60,9 +64,58 @@ function startGame (e){
   // TODO: if check is correct change class of element for 'open'
   usedCard.className += ' open';
   // TODO: call to functions: clicksCounter, cardMatch and score
-  clicksCounter();
+ // clicksCounter();
   cardMatch();
-  score();
+ // score();
+}
+}
+
+
+function cardMatch() {
+	if(li.className = 'card open'){
+		openCards.push(document.getElementsByClassName('card open'));
+		if (openCards.length === 2) {
+			for (const openCard of openCards) {
+				let openCard1 = openCard[0];
+				let openCard2 = openCard[1];
+			
+			// check if these two elements have the same class name
+			if (openCard1.firstChild.className === openCard2.firstChild.className){
+				
+				// add to siblings of these elements class mame 'matched'
+				  openCard1.className += ' match';
+				  openCard2.className += ' match';
+				  
+				  // remove from these elements class name 'open'
+				  openCard1.classList.remove('open');
+				  openCard2.classList.remove('open');
+				  // add to array with matched elements these two elements
+				  matchedCards.push(openCard1);
+				  matchedCards.push(openCard2);
+				  //  reset quantity of elements in array with open elements to 0
+				  openCards.length = 0;
+				  // check if quantity of elements in array with matched elements equals 16
+				  if(matchedCards.length == 16){
+
+					  // TODO: call to function finishGame
+					  finishGame();
+			}
+		}
+		
+		else {
+			  // if these two elements haven't the same class change the class name of previous sibling element of these elements for 'lid'
+				  setTimeout(function(){
+					 openCard1.className = 'card';
+				 	 openCard2.className = 'card';
+				  }, 850);
+
+				  // reset quantity of elements in array with open elements to 0
+				  openCards.length = 0;
+		}
+		 
+		}
+	}
+	
 }
 }
 /*
