@@ -26,7 +26,16 @@ function shuffle(array) {
 
     return array;
 }
+/* shuffle the list of cards using the provided "shuffle" method below  */
+newCards=shuffle(cards);
+/* - add each card's HTML to the page */
 
+function game(item){
+ deckList.innerHTML += '<li class="card"><i class="item"></i></li>';
+ document.querySelector('.item').className = item;
+}
+/* - loop through each card and create its HTML */ 
+newCards.forEach(game);
 
 /*
  * set up the event listener for a card. If a card is clicked:
