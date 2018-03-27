@@ -37,6 +37,15 @@ function game(item){
 /* - loop through each card and create its HTML */ 
 newCards.forEach(game);
 
+//  Add event listener 'click' for element ul for function startGame
+deckList.addEventListener('click', startGame);
+
+// Event listener for timer
+const clickedCard = document.querySelectorAll('.card');
+for(let i = 0; i < clickedCard.length; i++){
+ clickedCard[i].addEventListener('click', timerStart);
+}
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
