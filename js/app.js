@@ -45,7 +45,26 @@ const clickedCard = document.querySelectorAll('.card');
 for(let i = 0; i < clickedCard.length; i++){
  clickedCard[i].addEventListener('click', timerStart);
 }
+function startGame (e){
+ 
+ //stop propagation for click event
+ e.stopPropagation();
+ 
 
+ // TODO: set variable for one event target
+ let usedCard = e.target;
+ // TODO: set variable for tag name on event target
+ let cardCheck = e.target.tagName;
+ // TODO: check if class name is 'card' and if tag name isn't 'UL'
+ if( usedCard.className == 'card' && cardCheck != 'UL'){
+  // TODO: if check is correct change class of element for 'open'
+  usedCard.className += ' open';
+  // TODO: call to functions: clicksCounter, cardMatch and score
+  clicksCounter();
+  cardMatch();
+  score();
+}
+}
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
