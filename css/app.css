@@ -93,6 +93,7 @@ h1 {
 }
 
 .score-panel .stars {
+	visibility: hidden;
     margin: 0;
     padding: 0;
     display: inline-block;
@@ -107,4 +108,8 @@ h1 {
 .score-panel .restart {
     float: right;
     cursor: pointer;
+}
+.score-panel .stars .score{
+	visibility: visible;
+    color: rgb(255, 242, 0);
 }

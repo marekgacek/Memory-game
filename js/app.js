@@ -4,6 +4,7 @@
 const deckList = document.querySelector('.deck');
 let cards = ['fa fa-diamond','fa fa-diamond','fa fa-paper-plane-o','fa fa-paper-plane-o','fa fa-anchor','fa fa-anchor','fa fa-bolt','fa fa-bolt','fa fa-cube','fa fa-cube','fa fa-leaf','fa fa-leaf','fa fa-bicycle','fa fa-bicycle','fa fa-bomb','fa fa-bomb'];
 const li = document.getElementsByTagName('li');
+
 // set the variable which handle the array with cards which have class 'open'
 let openCards = [];
 
@@ -137,7 +138,24 @@ function movesCounter(){
 		}
 	}
 }
-
+function score(){
+	star1=document.getElementById('star1');
+	star2=document.getElementById('star2');
+	star3=document.getElementById('star3');
+	if(clicks <= 26){
+		star1.className += ' score';
+		star2.className += ' score';
+		star3.className += ' score';
+	}
+	else if(clicks > 26 && clicks < 34){
+		star1.className += ' score';
+		star2.className += ' score';
+		
+	}
+	else if(clicks > 34 ){
+		star1.className += ' score';
+	}
+}
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
