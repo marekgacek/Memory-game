@@ -3,18 +3,25 @@
 ## Table of Contents
 
 * [Instructions](#instructions)
+* [Install](#install)
 * [Contributing](#contributing)
 
 ## Instructions
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+In this game a Player has to match pairs of tiles. Playing is very easy - you turn over one tile and then try to find a matching tile.
+If cards match thier color change to green. If all cards are green player wins and score window appear.
+Player gets stars rating. You will get:
+ - 3 stars - less than 28 moves.
+ - 2 stars - between 28 - 38 moves.
+ - 1 star - more than 38 moves.
 
-To get started, open `js/app.js` and start building out the app's functionality
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
+To play again just click reset button.
+
+## Install
+
+Open this in any browser, I recommend Google Chrome.
 
 ## Contributing
 
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
-
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+This repository is the starter code for _all_ Udacity students.
