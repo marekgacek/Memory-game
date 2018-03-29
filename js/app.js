@@ -1,31 +1,35 @@
 /*
  * Create a list that holds all of your cards
  */
-const deckList = document.querySelector('.deck');
-let cards = ['fa fa-diamond','fa fa-diamond','fa fa-paper-plane-o','fa fa-paper-plane-o','fa fa-anchor','fa fa-anchor','fa fa-bolt','fa fa-bolt','fa fa-cube','fa fa-cube','fa fa-leaf','fa fa-leaf','fa fa-bicycle','fa fa-bicycle','fa fa-bomb','fa fa-bomb'];
-const li = document.getElementsByTagName('li');
+let symbols = ['fa fa-diamond', 'fa fa-diamond', 'fa fa-paper-plane-o', 'fa fa-paper-plane-o', 'fa fa-anchor', 'fa fa-anchor', 'fa fa-bolt', 'fa fa-bolt', 'fa fa-cube', 'fa fa-cube', 'fa fa-leaf', 'fa fa-leaf', 'fa fa-bicycle', 'fa fa-bicycle', 'fa fa-bomb', 'fa fa-bomb'];
 
-// set the variable which handle the array with cards which have class 'open'
+const deckList = document.querySelector('.deck');
+const cards = document.querySelectorAll('.card');
+const stars = document.querySelectorAll('.stars li')
+const popup = document.querySelector('.popup');
+const header = document.querySelector('header');
+const timer = document.querySelector('.timer');
+const restart = document.querySelector('.restart');
+const movesBox = document.getElementById('moves');
+// set the variable with 'open' cards
 let openCards = [];
 
-// set the variable which handle the array with cards which have class 'matched'
+// set the variable with 'matched' cards
 let matchedCards = [];
 
-const movesBox = document.getElementById('moves');
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-//  set the value for clicks counter and timer
 let clicks = 0;
-let m = 0;
+let time = true;
+let startTime;
+let endTime;
+let timerInterval;
+let timerCounter = 0;
+let timerMin = 0;
 let s = 0;
-let timeGoes = true;
+
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
 
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -38,124 +42,193 @@ function shuffle(array) {
     return array;
 }
 /* shuffle the list of cards using the provided "shuffle" method below  */
-newCards=shuffle(cards);
-/* - add each card's HTML to the page */
+let newCards = shuffle(symbols);
 
-function game(item){
- deckList.innerHTML += '<li class="card"><i class="item"></i></li>';
- document.querySelector('.item').className = item;
+/* - add each card's HTML to the page */
+function game(item) {
+    deckList.innerHTML += '<li class="card"><i class="item"></i></li>';
+    document.querySelector('.item').className = item;
 }
-/* - loop through each card and create its HTML */ 
+/* - loop through each card and create its HTML */
 newCards.forEach(game);
 
-//  Add event listener 'click' for element ul for function startGame
-deckList.addEventListener('click', startGame);
 
-// Event listener for timer
-const clickedCard = document.querySelectorAll('.card');
-for(let i = 0; i < clickedCard.length; i++){
- clickedCard[i].addEventListener('click', timerStart);
+
+deckList.addEventListener('click', function startGame(e) {
+
+    // variable for one event target
+    let usedCard = e.target;
+
+    // check if 
+    if (!(e.target.className === 'deck') && (openCards.length <= 2) && !(e.target.isClicked === 1) && !(e.target.localName === 'i')) {
+
+        showCards(e);
+        addCardToOpenCards(e);
+        movesCounter();
+
+        if (clicks === 1) {
+            timerInterval = setInterval(function() {
+                startTimer();
+            }, 1000);
+        }
+        score();
+    }
+})
+
+
+/*
+ * Functions for game
+ */
+
+//  if check is correct change class of element for 'open'
+function showCards(e) {
+    e.target.className = 'card open';
+    e.target.isClicked = 1;
 }
-function startGame (e){
- 
- //stop propagation for click event
- e.stopPropagation();
- 
-
- // TODO: set variable for one event target
- let usedCard = e.target;
- // TODO: set variable for tag name on event target
- let cardCheck = e.target.tagName;
- // TODO: check if class name is 'card' and if tag name isn't 'UL'
- if( usedCard.className == 'card' && cardCheck != 'UL'){
-  // TODO: if check is correct change class of element for 'open'
-  usedCard.className += ' open';
-  // TODO: call to functions: clicksCounter, cardMatch and score
-  movesCounter();
-  cardMatch();
- // score();
-}
+// add the card to a *list* of "open" cards 
+function addCardToOpenCards(e) {
+    openCards.push(e.target.firstChild);
+    cardMatch(openCards);
+    cardNoMatch(openCards);
 }
 
+// The same cards
+function cardMatch(array) {
 
-function cardMatch() {
-	if(li.className = 'card open'){
-		openCards.push(document.getElementsByClassName('card open'));
-		if (openCards.length === 2) {
-			for (const openCard of openCards) {
-				let openCard1 = openCard[0];
-				let openCard2 = openCard[1];
-			
-			// check if these two elements have the same class name
-			if (openCard1.firstChild.className === openCard2.firstChild.className){
-				
-				// add to siblings of these elements class mame 'matched'
-				  openCard1.className += ' match';
-				  openCard2.className += ' match';
-				  
-				  // remove from these elements class name 'open'
-				  openCard1.classList.remove('open');
-				  openCard2.classList.remove('open');
-				  // add to array with matched elements these two elements
-				  matchedCards.push(openCard1);
-				  matchedCards.push(openCard2);
-				  //  reset quantity of elements in array with open elements to 0
-				  openCards.length = 0;
-				  // check if quantity of elements in array with matched elements equals 16
-				  if(matchedCards.length == 16){
+    // check if these two elements have the same class name
+    if (openCards.length === 2 && openCards[0].className === openCards[1].className) {
 
-					  // TODO: call to function finishGame
-					  finishGame();
-			}
-		}
-		
-		else {
-			  // if these two elements haven't the same class change the class name of previous sibling element of these elements for 'lid'
-				  setTimeout(function(){
-					 openCard1.className = 'card';
-				 	 openCard2.className = 'card';
-				  }, 850);
+        // add to parent of these elements class mame 'matched'
+        openCards[0].parentNode.className = 'card match';
+        openCards[1].parentNode.className = 'card match';
 
-				  // reset quantity of elements in array with open elements to 0
-				  openCards.length = 0;
-		}
-		 
-		}
-	}
-	
+
+        // add to array with matched elements these two elements
+        matchedCards.push(array[0]);
+        matchedCards.push(array[1]);
+        //  reset quantity of elements in array with open elements to 0
+        clearOpenCards(array);
+
+        // check if quantity of elements in array with matched elements equals 16
+        if (matchedCards.length == 16) {
+
+            //  call to function finishGame
+            finishGame();
+        }
+    }
 }
-}
-function movesCounter(){
 
-	// counting clicks on cards
-	clicks = clicks + 1;
-	movesBox.innerHTML = 'Moves: ' + clicks;
+// Diffrent cards
+function cardNoMatch(array) {
+    if (array.length === 2 && array[0].className !== array[1].className) {
+        setTimeout(function() {
+            array[0].parentNode.className = 'card';
+            array[1].parentNode.className = 'card';
+            array[0].parentNode.isClicked = 0;
+            array[1].parentNode.isClicked = 0;
 
-	// Remove event listener 'click' for function timerStart
-	if(clicks == 1){
-		for(let i = 0; i < clickedCard.length; i++){
-			clickedCard[i].removeEventListener('click', timerStart);
-		}
-	}
+            // reset quantity of elements in array with open elements to 0                
+            clearOpenCards(array);
+        }, 800);
+    }
+
+
 }
-function score(){
-	star1=document.getElementById('star1');
-	star2=document.getElementById('star2');
-	star3=document.getElementById('star3');
-	if(clicks <= 26){
-		star1.className += ' score';
-		star2.className += ' score';
-		star3.className += ' score';
-	}
-	else if(clicks > 26 && clicks < 34){
-		star1.className += ' score';
-		star2.className += ' score';
-		
-	}
-	else if(clicks > 34 ){
-		star1.className += ' score';
-	}
+//Clear array					 
+function clearOpenCards(array) {
+    for (let i = 0; i < 2; i++) {
+        array.shift();
+    }
+    return array;
 }
+
+
+
+
+function movesCounter() {
+
+    // counting clicks on cards
+    clicks = clicks + 1;
+    movesBox.innerHTML = 'Moves: ' + clicks;
+
+}
+
+//Display stars on screen
+function score() {
+
+    if (clicks > 28 && clicks < 38) {
+        stars[0].style.visibility = 'hidden';
+    } else if (clicks > 38) {
+        stars[1].style.visibility = 'hidden';
+    }
+}
+
+
+/*
+ Timer 
+*/
+
+
+function startTimer() {
+
+    timerCounter++
+    s = timerCounter;
+    if (timerCounter === 60) {
+        timerMin++;
+        s = 0;
+        timerCounter = 0;
+    }
+    //show time on page
+    timer.innerHTML = 'Time: ' + timerMin + ' min ' + s + ' sec';
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerCounter = 0;
+    timerMin = 0;
+    timer.innerHTML = "Time: 0 min 0 sec";
+}
+
+//End game when all cards are matched and show popup window	
+function finishGame() {
+
+    let myTime = timerMin + ' min ' + s + ' sec';
+    if (clicks <= 28) {
+        let rating = stars[0].innerHTML + stars[1].innerHTML + stars[2].innerHTML;
+        popup.innerHTML = '<p><span class="popup-title">Congratulations!!!</span><br><br><span class="score">Your score:</span><br><br>Time: ' + myTime + '<br>Rating: ' + rating + '<br>Moves: ' + clicks + '<br><br><button id="play-again">Play again</button></p>';
+
+    } else if (clicks > 28 && clicks < 38) {
+        let rating = stars[0].innerHTML + stars[1].innerHTML;
+        popup.innerHTML = '<p><span class="popup-title">Congratulations!!!</span><br><br><span class="score">Your score:</span><br><br>Time: ' + myTime + '<br>Rating: ' + rating + '<br>Moves: ' + clicks + '<br><br><button id="play-again">Play again</button></p>';
+
+    } else if (clicks > 38) {
+        let rating = stars[0].innerHTML;
+        popup.innerHTML = '<p><span class="popup-title">Congratulations!!!</span><br><br><span class="score">Your score:</span><br><br>Time: ' + myTime + '<br>Rating: ' + rating + '<br>Moves: ' + clicks + '<br><br><button id="play-again">Play again</button></p>';
+
+    }
+
+    deckList.style.display = 'none';
+    popup.style.visibility = 'visible';
+    header.style.visibility = 'hidden';
+
+    stopTimer();
+
+    //handle button with id nextGame
+    nextGame = document.getElementById('play-again');
+
+    //add to variable next-game event listener which call function playAgain
+    nextGame.addEventListener('click', playAgain);
+
+}
+
+//Reload game
+function playAgain() {
+    newCards.forEach(game);
+    window.location.reload();
+
+}
+
+restart.addEventListener('click', playAgain);
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
